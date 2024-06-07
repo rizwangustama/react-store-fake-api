@@ -9,6 +9,7 @@ import {
   Link,
 } from "react-router-dom";
 import Login from './pages/Login.tsx';
+import Dashboard from './pages/Dashboard.tsx';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <div>Dashboard</div>,
+    element: <Dashboard />,
   },
   {
     path: "login",
