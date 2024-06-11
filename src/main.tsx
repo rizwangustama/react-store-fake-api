@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import Login from './pages/Login.tsx';
 import Dashboard from './pages/Dashboard.tsx';
+import Product from './pages/product/Product.tsx';
+import ProductDetail from './pages/product/ProductDetail.tsx';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,25 @@ const router = createBrowserRouter([
   {
     path: "dashboard",
     element: <Dashboard />,
+    children: [
+      {
+        path: "products",
+        element: <Product />,
+        
+      },
+      {
+        path: "products/:id", 
+        element: <ProductDetail/>,
+      },
+      {
+        path: "orders",
+        element: <div>Orders</div>,
+      },
+      {
+        path: "customers",
+        element: <div>Customers</div>,
+      },
+    ]
   },
   {
     path: "login",
