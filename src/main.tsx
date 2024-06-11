@@ -5,8 +5,6 @@ import './index.css'
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
-  Link,
 } from "react-router-dom";
 import Login from './pages/Login.tsx';
 import Dashboard from './pages/Dashboard.tsx';

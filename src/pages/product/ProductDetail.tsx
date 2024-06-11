@@ -1,15 +1,21 @@
 import axios from "axios";
-import { Label, TextInput, Checkbox, Button, Select, Textarea } from "flowbite-react";
+import { Label, TextInput, Button, Select, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+interface Category {
+    id: number;
+    name: string;
+    image: string;
+}
+
 const ProductDetail = () => {
-    const [listCategory, setListCategory] = useState([]);
+    const [listCategory, setListCategory] = useState<Category[]>([]);
     const [nameProduct, setNameProduct] = useState("");
-    const [categoryProduct, setCategoryProduct] = useState("");
+    const [categoryProduct, setCategoryProduct] = useState(0);
     const [priceProduct, setPriceProduct] = useState(0);
     const [descriptionProduct, setDescriptionProduct] = useState("");
-    const { id } = useParams();
+    const { id } = useParams<{ id: string}>();
 
     const getHandleCategory = () => {
         axios.get("https://api.escuelajs.co/api/v1/categories").then((res) => {
@@ -17,18 +23,21 @@ const ProductDetail = () => {
         })
     }
 
-    const getDetailProduct = (id: number) => {
-        axios.get("https://api.escuelajs.co/api/v1/products/" + id).then((res) => {
+    const getDetailProduct = async (id: string) => {
+        try {
+            const res = await axios.get("https://api.escuelajs.co/api/v1/products/" + id);
             setNameProduct(res.data.title);
             setCategoryProduct(res.data.category.id);
             setPriceProduct(res.data.price);
             setDescriptionProduct(res.data.description);
-        })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleReset = () => {
         setNameProduct("");
-        setCategoryProduct("");
+        setCategoryProduct(0);
         setPriceProduct(0);
         setDescriptionProduct("");
 
@@ -36,8 +45,11 @@ const ProductDetail = () => {
 
     useEffect(() => {
         getHandleCategory();
-        getDetailProduct(id);
-    }, []);
+        if (id) {
+            getDetailProduct(id);
+        }
+
+    }, [id]);
     return (
         <>
             <div className="w-full mx-auto flex items-center justify-center pt-14">
@@ -53,7 +65,7 @@ const ProductDetail = () => {
                         <div className="mb-2 block">
                             <Label htmlFor="priceproduct" value="Category Product *" />
                         </div>
-                        <Select id="category" required shadow value={categoryProduct} onChange={(e) => setCategoryProduct(e.target.value)}>
+                        <Select id="category" required shadow value={categoryProduct} onChange={(e) => setCategoryProduct(e.target.value as any)}>
                             <option>-- Select Category --</option>
                             {listCategory.map((item: any) => {
                                 return (
@@ -66,7 +78,7 @@ const ProductDetail = () => {
                         <div className="mb-2 block">
                             <Label htmlFor="priceproduct" value="Price Product *" />
                         </div>
-                        <TextInput value={priceProduct} onChange={(e) => setPriceProduct(e.target.value)} id="priceproduct" type="number" required shadow placeholder="Please input your price" />
+                        <TextInput value={priceProduct} onChange={(e) => setPriceProduct(e.target.value as any)} id="priceproduct" type="number" required shadow placeholder="Please input your price" />
                     </div>
                     <div>
                         <div className="mb-2 block">

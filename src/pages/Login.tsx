@@ -7,7 +7,7 @@ import {
     Toast,
     ToastToggle,
 } from "flowbite-react";
-import { HiFire, HiCheck } from "react-icons/hi";
+import { HiCheck } from "react-icons/hi";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 function Login() {
