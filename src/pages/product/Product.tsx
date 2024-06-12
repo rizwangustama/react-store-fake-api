@@ -16,6 +16,7 @@ import {
     HiPencil,
     HiEye,
 } from "react-icons/hi";
+import ModalConfirmation from "../../components/ModalConfirmation";
 
 interface Category {
     id: number;
@@ -34,9 +35,11 @@ interface Product {
 const Product = () => {
     const navigator = useNavigate();
     const [listProduct, setListProduct] = useState<Product[]>([]);
+    const [isShow, setIsShow] = useState(Boolean);
+    const [id, setId] = useState(0)
 
 
-    const fetchData = async (page: number = 1) => {
+    const fetchData = async (page: number = 0) => {
         try {
             const offset = (page - 1) * 10;
             const res = axios.get(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=10`);
@@ -50,10 +53,44 @@ const Product = () => {
     };
 
     const handleDetailProduct = (id: number) => {
-        navigator("/dashboard/products/" + id);
+        navigator("/dashboard/products/view/" + id);
     }
     const onAddProduct = () => {
         console.log("Add");
+    }
+
+    const handleDetailEdit = (id: number) => {
+        navigator("/dashboard/products/edit/" + id);
+    }
+
+    const handleOnShow = (id: number) => {
+        // alert("Show");
+        setId(id);
+        setIsShow(true);
+
+    }
+
+    const handleOnClose = () => {
+        // setIsShow(true);
+        // alert("clouse");
+        setIsShow(false);
+    }
+
+    const handleOnConfirm = (id: number) => {
+        // alert(id);
+        // alert("Memk");
+        handleDeleteProduct(id);
+    }
+
+    const handleDeleteProduct = async (id:number) => {
+        try {
+            const res = await axios.delete('https://api.escuelajs.co/api/v1/products/' + id);
+            console.log(res);
+            await fetchData(0);
+            setIsShow(false);
+        } catch (error) {
+            
+        }
     }
 
     useEffect(() => {
@@ -61,6 +98,7 @@ const Product = () => {
     }, []);
 
     return (
+        <>
         <div className="mt-6 w-full">
             <div className="py-6 flex justify-between pr-6">
                 <h1 className="text-3xl font-semibold text-gray-600">Product</h1>
@@ -97,10 +135,10 @@ const Product = () => {
                                     <Button onClick={() => handleDetailProduct(data.id)}>
                                         <HiEye className="h-4 w-4" />
                                     </Button>
-                                    <Button href="#" color="warning">
+                                    <Button color="warning" onClick={() => handleDetailEdit(data.id)}>
                                         <HiPencil className="h-4 w-4" />
                                     </Button>
-                                    <Button color="failure"><HiTrash className="h-4 w-4" /></Button>
+                                    <Button onClick={() => handleOnShow(data.id)} color="failure"><HiTrash className="h-4 w-4" /></Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -112,6 +150,10 @@ const Product = () => {
                 </div>
             </div>
         </div>
+
+        {/* Confir */}
+        <ModalConfirmation show={isShow} onClose={() => handleOnClose()} onConfirm={() => handleOnConfirm(id)}/>
+        </>
     )
 }
 
