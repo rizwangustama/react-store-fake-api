@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+// import App from './App.tsx'
+import './App.css'
 import './index.css'
 import {
   createBrowserRouter,
@@ -10,11 +11,24 @@ import Login from './pages/Login.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Product from './pages/product/Product.tsx';
 import ProductDetail from './pages/product/ProductDetail.tsx';
+import Portal from './pages/portal/index.tsx';
+import Home from './pages/portal/home';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    // element: <App />,
+    element: <Portal/>,
+    children: [
+      {
+        path: '/home',
+        element: <Home />,
+      },
+      {
+        path: "/about",
+        element: <div>About</div>,
+      },
+    ]
   },
   {
     path: "about",
@@ -37,6 +51,10 @@ const router = createBrowserRouter([
         path: "products/:id", 
         element: <ProductDetail/>,
       },
+      // {
+      //   path: "products/add",
+      //   element: <ProductDetail/>
+      // },
       {
         path: "products/:view/:id",
         element: <ProductDetail/>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Label, TextInput, Button, Select, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate  } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 interface Category {
     id: number;
@@ -15,11 +15,11 @@ const ProductDetail = () => {
     const [categoryProduct, setCategoryProduct] = useState(0);
     const [priceProduct, setPriceProduct] = useState(0);
     const [descriptionProduct, setDescriptionProduct] = useState("");
-    const {id, view } = useParams<{ id: string, view: string}>();
+    const { id, view } = useParams<{ id: string, view: string }>();
     const [isDisabled, setIsDisabled] = useState(Boolean);
     const [idProduct, setIdProduct] = useState("");
     const navigator = useNavigate();
-    
+
 
     const getHandleCategory = () => {
         axios.get("https://api.escuelajs.co/api/v1/categories").then((res) => {
@@ -40,6 +40,7 @@ const ProductDetail = () => {
     }
 
     const handleView = () => {
+        // alert(view);
         if (view == 'view') {
             setIsDisabled(true);
         } else {
@@ -58,16 +59,25 @@ const ProductDetail = () => {
     const saveProduct = async (e: any) => {
         e.preventDefault();
         try {
-            const body = {
-                title: nameProduct,
-                price: priceProduct,
-            };
-            
-            const response = await axios.put(`https://api.escuelajs.co/api/v1/products/${idProduct}`, body);
-            console.log(response.data);
-            navigator('/dashboard/products/')
-            // alert(JSON.stringify(response.data));
-            
+            if (view == 'view') {
+                const body = {
+                    title: nameProduct,
+                    price: priceProduct,
+                };
+                const response = await axios.put(`https://api.escuelajs.co/api/v1/products/${idProduct}`, body);
+                console.log(response.data);
+            } else {
+                const body = {
+                    title: nameProduct,
+                    price: priceProduct,
+                    description : descriptionProduct,
+                    categoryId: categoryProduct,
+                    images : ["https://placeimg.com/640/480/any"]
+                }
+                const response = await axios.post("https://api.escuelajs.co/api/v1/products/", body);
+                console.log(response.data);
+            }
+            navigator('/dashboard/products/');
         } catch (error) {
             // console.error(error);
             alert('An error occurred while updating the product.');
@@ -133,9 +143,9 @@ const ProductDetail = () => {
                     <div className="flex gap-3">
                         {isDisabled ? (
                             <>
-                                <Button className="w-[120px]" onClick={() => backToProduct() }>Back</Button>
+                                <Button className="w-[120px]" onClick={() => backToProduct()}>Back</Button>
                             </>
-                        ) : '' }
+                        ) : ''}
                         <Button className="w-[120px]" type="submit" disabled={isDisabled}>
                             Save
                         </Button>

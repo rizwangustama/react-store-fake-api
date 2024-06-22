@@ -57,6 +57,7 @@ const Product = () => {
     }
     const onAddProduct = () => {
         console.log("Add");
+        navigator('/dashboard/products/add');
     }
 
     const handleDetailEdit = (id: number) => {
